@@ -1,9 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
 const { run } = require('lighthouse/lighthouse-core/runner');
 
 const app = express();
+app.use(express.json());
+app.use(cors());
 
 app.get('/api/avaliar', async (req, res) => {
     const { url_site } = req.query;
