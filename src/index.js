@@ -10,19 +10,24 @@ app.use(cors());
 
 app.get('/api/avaliar', async (req, res) => {
     const { url_site } = req.query;
-    console.log('Site: ' + url_site);
 
-    const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
-    const options = {
-        logLevel: 'info', 
-        output: 'html',
-        onlyCategories: ['performance'],
-        port: chrome.port,
-    };
-    const runnerResult = await lighthouse(url_site, options);
-    await chrome.kill();
+    try{
+        const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
+        const options = {
+            logLevel: 'info', 
+            output: 'html',
+            onlyCategories: ['performance'],
+            port: chrome.port,
+        };
+        const runnerResult = await lighthouse(url_site, options);
+        await chrome.kill();
 
-    return res.json(runnerResult.lhr);
+        return res.json(runnerResult.lhr);
+    }
+    catch(erro){
+        const msg = "Falha ao fazer requisição. Erro: " + erro;
+        return res.send(msg);
+    }
 });
 
 app.get('/api', (req, res) => {
